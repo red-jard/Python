@@ -1,0 +1,54 @@
+#Autor: Gabriel Julião Jard
+#Sistemas de informação -  UFMS-CPAN - Topicos Especiais em Computação
+
+import heapq
+from collections import defaultdict
+
+#A palavra-chave def declara uma função chamda codigo, tendo como argumento frequencia que vai entre parenteses.
+
+def codigo(frequencia):
+    heap = [[bits, [Simbolo, '']] for Simbolo, bits in frequencia.items()]
+    heapq.heapify(heap)
+    while len(heap) > 1:
+        lo = heapq.heappop(heap)
+        hi = heapq.heappop(heap)
+        for pair in lo[1:]:
+            pair[1] = '0' + pair[1]
+          
+        for pair in hi[1:]:
+            pair[1] = '1' + pair[1]
+        
+        heapq.heappush(heap, [lo[0] + hi[0]] + lo[1:] + hi[1:])
+    return sorted(heapq.heappop(heap)[1:], key=lambda p: (len(p[-1]), p)
+    )
+
+#A variavel Texto recebe a string utilizada ABRACADABRA! 
+Texto = "ABRACADABRA!"
+
+#Feito um for para calcular a frequencia de cada simbolo
+frequencia = defaultdict(int)
+for Simbolo in Texto:
+    frequencia[Simbolo] += 1
+
+print("Texto Descodificado:",Texto) 
+
+print("\n")
+
+#Tabela com o simbolo, numero de bits e o simbolo codficado no algoritmo de Huffman.
+huff = codigo(frequencia)
+print ("Simbolo".ljust(10) + "Nº bits".ljust(10) + "Huffman Codigo")
+for p in huff:
+    print (p[0].ljust(10) + str(frequencia[p[0]]).ljust(10) + p[1] ) 
+
+print("\n")
+print("Texto Codificado:")
+
+#Transformar o texto em lista 
+t = list(Texto)
+te=len(t)
+i=0
+#Comparar a lista criada com os caracteres para mostrar o texto codificado
+for i in range (0,te):
+  for p in huff:
+    if t[i]==p[0]:
+      print(p[1],end="")
